@@ -1,6 +1,5 @@
 package com.robotutor.authService.models
 
-import com.robotutor.authService.controllers.view.UserSignUpRequest
 import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.TypeAlias
@@ -17,26 +16,16 @@ data class UserDetails(
     var id: ObjectId? = null,
     @Indexed(unique = true)
     val userId: UserId,
-    val name: String,
-    @Indexed(unique = true)
-    val email: String,
     var password: String,
-    val registeredAt: LocalDateTime = LocalDateTime.now()
+    val registeredAt: LocalDateTime = LocalDateTime.now(),
+    var updatedAt: LocalDateTime = LocalDateTime.now(),
+    val passwordAttempts: Int = 5,
+    val isLocked: Boolean = false
 ) {
     fun updatePassword(encodedPassword: String): UserDetails {
         this.password = encodedPassword
+        this.updatedAt = LocalDateTime.now()
         return this
-    }
-
-    companion object {
-        fun from(userId: String, userDetails: UserSignUpRequest, password: String): UserDetails {
-            return UserDetails(
-                userId = userId,
-                name = userDetails.name,
-                email = userDetails.email,
-                password = password
-            )
-        }
     }
 }
 

@@ -61,13 +61,13 @@ class AuthControllerTest {
         val token = TokenBuilder(tokenId = "tokenId", value = "value", userId = "userId").build()
         every { tokenService.login(any()) } returns Mono.just(token)
 
-        val userLoginRequest = UserLoginRequest(email = "email", password = "password")
-        val response = authController.login(userLoginRequest)
+        val authLoginRequest = AuthLoginRequest(email = "email", password = "password")
+        val response = authController.login(authLoginRequest)
 
         assertNextWith(response) {
             it shouldBe TokenResponse(token = "value", success = true)
             verify(exactly = 1) {
-                tokenService.login(userLoginRequest)
+                tokenService.login(authLoginRequest)
             }
         }
     }

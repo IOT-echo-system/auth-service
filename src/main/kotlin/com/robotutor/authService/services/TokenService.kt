@@ -3,7 +3,6 @@ package com.robotutor.authService.services
 
 import com.robotutor.authService.controllers.view.ResetPasswordRequest
 import com.robotutor.authService.controllers.view.UpdateTokenRequest
-import com.robotutor.authService.controllers.view.UserLoginRequest
 import com.robotutor.authService.controllers.view.ValidateTokenResponse
 import com.robotutor.authService.exceptions.IOTError
 import com.robotutor.authService.gateway.AccountServiceGateway
@@ -31,10 +30,10 @@ class TokenService(
     private val accountServiceGateway: AccountServiceGateway
 ) {
 
-    fun login(userLoginRequest: UserLoginRequest): Mono<Token> {
-        return userService.verifyCredentials(userLoginRequest)
-            .flatMap { generateToken(userId = it.userId, expiredAt = LocalDateTime.now().plusDays(7)) }
-    }
+//    fun login(userLoginRequest: UserLoginRequest): Mono<Token> {
+//        return userService.verifyCredentials(userLoginRequest)
+//            .flatMap { generateToken(userId = it.userId, expiredAt = LocalDateTime.now().plusDays(7)) }
+//    }
 
 
     fun validate(token: String): Mono<ValidateTokenResponse> {
@@ -56,7 +55,7 @@ class TokenService(
 
     fun generateToken(
         userId: UserId,
-        expiredAt: LocalDateTime,
+        expiredAt: LocalDateTime = LocalDateTime.now().plusDays(7),
         otpId: OtpId? = null,
         accountId: String? = null,
         roleId: String? = null,
@@ -108,7 +107,7 @@ class TokenService(
             userService.resetPassword(
                 token.userId,
                 resetPasswordRequest.currentPassword ?: "",
-                resetPasswordRequest.password
+//                resetPasswordRequest.password
             )
         }
     }

@@ -15,14 +15,16 @@ class AuthController(
     private val tokenService: com.robotutor.authService.services.TokenService,
     private val otpService: OtpService
 ) {
-    @PostMapping("/sign-up")
-    fun signUp(@RequestBody @Validated userDetails: UserSignUpRequest): Mono<UserSignUpResponse> {
-        return userService.register(userDetails).map { UserSignUpResponse.create(it) }
+    @PostMapping("/password")
+    fun savePassword(@RequestBody userPasswordRequest: UserPasswordRequest): Mono<Boolean> {
+        return userService.savePassword(userPasswordRequest).map { true }
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody @Validated userDetails: UserLoginRequest): Mono<TokenResponse> {
-        return tokenService.login(userDetails).map { TokenResponse(it.value, true) }
+    fun login(@RequestBody @Validated userDetails: AuthLoginRequest): Mono<TokenResponse> {
+        return userService.login(userDetails)
+            .flatMap { tokenService.generateToken(it.userId) }
+            .map { TokenResponse(it.value) }
     }
 
     @GetMapping("/logout")
@@ -38,14 +40,14 @@ class AuthController(
         return tokenService.validate(token)
     }
 
-    @PostMapping("/generate-otp")
-    fun generateOtp(@RequestBody @Validated generateOtpRequest: GenerateOtpRequest): Mono<OtpResponse> {
-        return otpService.generateOtp(generateOtpRequest).map { OtpResponse(it.otpId, true, it.createdAt) }
-    }
+//    @PostMapping("/generate-otp")
+//    fun generateOtp(@RequestBody @Validated generateOtpRequest: GenerateOtpRequest): Mono<OtpResponse> {
+//        return otpService.generateOtp(generateOtpRequest).map { OtpResponse(it.otpId, true, it.createdAt) }
+//    }
 
     @PostMapping("/verify-otp")
     fun verifyOtp(@RequestBody @Validated verifyOtpRequest: VerifyOtpRequest): Mono<TokenResponse> {
-        return otpService.verifyOtp(verifyOtpRequest).map { TokenResponse(it.value, true) }
+        return otpService.verifyOtp(verifyOtpRequest).map { TokenResponse(it.value) }
     }
 
     @PostMapping("/reset-password")
@@ -62,13 +64,7 @@ class AuthController(
         @RequestHeader("Authorization") token: String = ""
     ): Mono<TokenResponse> {
         return tokenService.updateToken(updateTokenRequest, token)
-            .map { TokenResponse(it.value, true) }
-    }
-
-    @GetMapping("/user-details")
-    fun userDetails(authenticationData: UserAuthenticationData): Mono<UserDetailsResponse> {
-        return userService.getUserByUserId(authenticationData.userId)
-            .map { UserDetailsResponse.from(it, authenticationData) }
+            .map { TokenResponse(it.value) }
     }
 
     @GetMapping("/boards/{boardId}/secret-key")

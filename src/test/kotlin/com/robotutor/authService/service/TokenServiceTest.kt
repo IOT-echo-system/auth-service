@@ -3,7 +3,7 @@ package com.robotutor.authService.service
 import com.robotutor.authService.builder.TokenBuilder
 import com.robotutor.authService.builder.UserDetailsBuilder
 import com.robotutor.authService.controllers.view.ResetPasswordRequest
-import com.robotutor.authService.controllers.view.UserLoginRequest
+import com.robotutor.authService.controllers.view.AuthLoginRequest
 import com.robotutor.authService.exceptions.IOTError
 import com.robotutor.authService.models.IdType
 import com.robotutor.authService.repositories.TokenRepository
@@ -57,7 +57,7 @@ class TokenServiceTest {
 
     @Test
     fun `should create token if login credentials are correct`() {
-        val credentials = UserLoginRequest(email = "email", password = "password")
+        val credentials = AuthLoginRequest(email = "email", password = "password")
         val user = UserDetailsBuilder(userId = "userId", email = "email", password = "encodedPassword").build()
         val token = TokenBuilder(tokenId = "001", value = "token value").build()
 

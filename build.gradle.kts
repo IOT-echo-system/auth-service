@@ -44,7 +44,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.security:spring-security-crypto:5.6.4")
     implementation("com.robotutor:logging-starter:1.0.0")
-    implementation("com.robotutor:robotutor-tech-utils:1.0.0")
+    implementation("com.robotutor:robotutor-tech-utils:1.0.3")
     implementation("com.robotutor:web-client-starter:1.0.1")
     implementation("com.robotutor:mqtt-starter:1.0.1")
 
