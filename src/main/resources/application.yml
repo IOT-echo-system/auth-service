@@ -17,16 +17,8 @@ app:
   utils:
     auth-service-base-url: http://localhost:${server.port}
     open-api-endpoints:
-      - "/auth/password"
       - "/auth/login"
       - "/auth/validate"
-      - "/auth/generate-otp"
-      - "/auth/verify-otp"
-
-  auth:
-    account-gateway:
-      base-url: http://localhost:${server.port}
-      validate-role-and-account-path: '/accounts/validate'
   user-service:
     base-url: ${USER_SERVICE_BASE_URL:http://localhost:9002}
     user-id-path: /users

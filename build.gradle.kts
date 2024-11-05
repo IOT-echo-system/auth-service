@@ -85,6 +85,7 @@ jacoco {
 
 tasks.test {
     finalizedBy(tasks.jacocoTestReport)
+    jvmArgs("-XX:+EnableDynamicAgentLoading")
 }
 
 tasks.jacocoTestReport {

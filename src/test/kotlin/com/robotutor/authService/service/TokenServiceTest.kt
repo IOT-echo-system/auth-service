@@ -1,21 +1,12 @@
 package com.robotutor.authService.service
 
 import com.robotutor.authService.builder.TokenBuilder
-import com.robotutor.authService.builder.UserDetailsBuilder
-import com.robotutor.authService.controllers.view.ResetPasswordRequest
-import com.robotutor.authService.controllers.view.AuthLoginRequest
-import com.robotutor.authService.exceptions.IOTError
 import com.robotutor.authService.models.IdType
 import com.robotutor.authService.repositories.TokenRepository
 import com.robotutor.authService.services.TokenService
-import com.robotutor.authService.services.UserService
-import com.robotutor.iot.exceptions.UnAuthorizedException
-import com.robotutor.iot.models.AuditEvent
-import com.robotutor.iot.models.AuditMessage
-import com.robotutor.iot.models.AuditStatus
-import com.robotutor.iot.models.MqttTopicName
 import com.robotutor.iot.service.IdGeneratorService
 import com.robotutor.iot.services.MqttPublisher
+import com.robotutor.iot.utils.assertNextWith
 import io.kotest.matchers.shouldBe
 import io.mockk.*
 import org.junit.jupiter.api.AfterEach
@@ -29,22 +20,16 @@ class TokenServiceTest {
 
     private val tokenRepository = mockk<TokenRepository>()
     private val idGeneratorService = mockk<IdGeneratorService>()
-    private val userService = mockk<UserService>()
     private val mqttPublisher = mockk<MqttPublisher>()
 
-    private val tokenService = TokenService(
-        tokenRepository = tokenRepository,
-        idGeneratorService = idGeneratorService,
-        userService = userService,
-        accountServiceGateway = TODO()
-    )
+    private val tokenService = TokenService(tokenRepository = tokenRepository, idGeneratorService = idGeneratorService)
     private val mockTime = LocalDateTime.of(2024, 1, 1, 1, 1)
 
     @BeforeEach
     fun setUp() {
         clearAllMocks()
         mockkStatic(LocalDateTime::class)
-        every { mqttPublisher.publish(any(), any()) } returns Unit
+        every { mqttPublisher.publish(any(), any()) } just Runs
         every { LocalDateTime.now(ZoneId.of("UTC")) } returns mockTime
     }
 
@@ -53,39 +38,24 @@ class TokenServiceTest {
         clearAllMocks()
     }
 
-//    @Test
-//    fun `should create token if login credentials are correct`() {
-//        val credentials = AuthLoginRequest(email = "email", password = "password")
-//        val user = UserDetailsBuilder(userId = "userId", email = "email", password = "encodedPassword").build()
-//        val token = TokenBuilder(tokenId = "001", value = "token value").build()
-//
-//        every { userService.verifyCredentials(any()) } returns Mono.just(user)
-//        every { idGeneratorService.generateId(any()) } returns Mono.just("001")
-//        every { tokenRepository.save(any()) } returns Mono.just(token)
-//
-//
-//        val response = tokenService.login(credentials)
-//
-//        assertNextWith(response) {
-//            it shouldBe token
-//            verify {
-//                userService.verifyCredentials(credentials)
-//                idGeneratorService.generateId(IdType.TOKEN_ID)
-//                tokenRepository.save(any())
-//                mqttPublisher.publish(
-//                    MqttTopicName.AUDIT, AuditMessage(
-//                        status = AuditStatus.SUCCESS,
-//                        userId = "userId",
-//                        metadata = mapOf("tokenId" to "001"),
-//                        event = AuditEvent.GENERATE_TOKEN,
-//                        accountId = "missing-account-id",
-//                        deviceId = "missing-device-id",
-//                        timestamp = mockTime
-//                    )
-//                )
-//            }
-//        }
-//    }
+    @Test
+    fun `should generate token`() {
+        val token =
+            TokenBuilder(tokenId = "00001", value = "tokenValue", createdAt = mockTime, expiredAt = mockTime).build()
+        every { idGeneratorService.generateId(any()) } returns Mono.just("00001")
+        every { tokenRepository.save(any()) } returns Mono.just(token)
+
+
+        val response = tokenService.generateToken(userId = "001")
+            .contextWrite { it.put(MqttPublisher::class.java, mqttPublisher) }
+
+        assertNextWith(response) {
+            it shouldBe token
+            verify(exactly = 1) {
+                idGeneratorService.generateId(IdType.TOKEN_ID)
+            }
+        }
+    }
 //
 //    @Test
 //    fun `should not validate token`() {

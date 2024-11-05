@@ -81,9 +81,6 @@ class UserService(
                         .auditOnError(event = AuditEvent.VERIFY_PASSWORD, userId = details.userId)
                 }
             }
-            .switchIfEmpty {
-                createMonoError(BadDataException(IOTError.IOT0102))
-            }
             .logOnSuccess("Successfully verified password")
             .logOnError("", "Failed to verify password")
     }

@@ -1,34 +1,23 @@
 package com.robotutor.authService.services
 
 
-import com.robotutor.authService.controllers.view.ValidateTokenResponse
-import com.robotutor.authService.exceptions.IOTError
-import com.robotutor.authService.gateway.AccountServiceGateway
 import com.robotutor.authService.models.IdType
 import com.robotutor.authService.models.OtpId
 import com.robotutor.authService.models.Token
 import com.robotutor.authService.models.UserId
 import com.robotutor.authService.repositories.TokenRepository
-import com.robotutor.iot.auditOnError
 import com.robotutor.iot.auditOnSuccess
-import com.robotutor.iot.exceptions.UnAuthorizedException
 import com.robotutor.iot.models.AuditEvent
 import com.robotutor.iot.service.IdGeneratorService
-import com.robotutor.iot.utils.createMonoError
-import com.robotutor.iot.utils.models.UserAuthenticationData
-import com.robotutor.loggingstarter.logOnError
 import com.robotutor.loggingstarter.logOnSuccess
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
-import reactor.kotlin.core.publisher.switchIfEmpty
 import java.time.LocalDateTime
 
 @Service
 class TokenService(
     private val tokenRepository: TokenRepository,
     private val idGeneratorService: IdGeneratorService,
-    private val userService: UserService,
-    private val accountServiceGateway: AccountServiceGateway
 ) {
 
 //    fun login(userLoginRequest: UserLoginRequest): Mono<Token> {
@@ -81,9 +70,7 @@ class TokenService(
                         userId = userId
                     )
             }
-            .auditOnError(event = AuditEvent.GENERATE_TOKEN, userId = userId)
             .logOnSuccess(message = "Successfully generated token")
-            .logOnError(errorMessage = "Failed to generate token")
     }
 
 //    fun resetPassword(resetPasswordRequest: ResetPasswordRequest, tokenValue: String): Mono<UserDetails> {
