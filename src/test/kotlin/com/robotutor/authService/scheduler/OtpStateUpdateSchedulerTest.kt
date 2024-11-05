@@ -30,7 +30,7 @@ class OtpStateUpdateSchedulerTest {
     fun `should set all otp as expired if older than 10 min`() {
         val before10Min = LocalDateTime.of(2023, 1, 1, 1, 0)
         val now = LocalDateTime.of(2023, 1, 1, 1, 10)
-        val otp = OtpBuilder(otpId = "otpId", value = "value", email = "example@email.com", createdAt = now).build()
+        val otp = OtpBuilder(otpId = "otpId", value = "value", createdAt = now).build()
 
         every { LocalDateTime.now() } returns now
         every { otpRepository.findAllByStateAndCreatedAtBefore(any(), any()) } returns Flux.just(otp)

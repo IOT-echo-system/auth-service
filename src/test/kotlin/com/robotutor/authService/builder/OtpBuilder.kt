@@ -9,7 +9,6 @@ data class OtpBuilder(
     val id: ObjectId? = null,
     val otpId: String = "",
     val value: String = "",
-    val email: String = "",
     val userId: String = "",
     val state: OtpState = OtpState.GENERATED,
     val createdAt: LocalDateTime = LocalDateTime.now()
@@ -19,7 +18,6 @@ data class OtpBuilder(
             id = id,
             otpId = otpId,
             value = value,
-            email = email,
             userId = userId,
             state = state,
             createdAt = createdAt

@@ -9,4 +9,5 @@ import reactor.core.publisher.Mono
 @Repository
 interface UserRepository : ReactiveCrudRepository<UserDetails, UserId> {
     fun findByUserId(userId: UserId): Mono<UserDetails>
+    fun existsByUserId(userId: UserId): Mono<Boolean>
 }

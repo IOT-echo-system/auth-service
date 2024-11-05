@@ -5,7 +5,6 @@ import com.robotutor.authService.controllers.view.UserPasswordRequest
 import com.robotutor.authService.exceptions.IOTError
 import com.robotutor.authService.gateway.UserServiceGateway
 import com.robotutor.authService.models.UserDetails
-import com.robotutor.authService.models.UserId
 import com.robotutor.authService.repositories.UserRepository
 import com.robotutor.iot.auditOnError
 import com.robotutor.iot.auditOnSuccess
@@ -26,16 +25,16 @@ class UserService(
     private val passwordEncoder: PasswordEncoder,
     private val userServiceGateway: UserServiceGateway
 ) {
-    fun resetPassword(userId: UserId, password: String): Mono<UserDetails> {
-        return userRepository.findByUserId(userId)
-            .flatMap {
-                userRepository.save(it.updatePassword(passwordEncoder.encode(password)))
-            }
-            .auditOnSuccess(event = AuditEvent.RESET_PASSWORD, userId = userId)
-            .auditOnError(event = AuditEvent.RESET_PASSWORD, userId = userId)
-            .logOnSuccess(message = "Successfully updated password")
-            .logOnError(errorMessage = "Failed to update password")
-    }
+//    fun resetPassword(userId: UserId, password: String): Mono<UserDetails> {
+//        return userRepository.findByUserId(userId)
+//            .flatMap {
+//                userRepository.save(it.updatePassword(passwordEncoder.encode(password)))
+//            }
+//            .auditOnSuccess(event = AuditEvent.RESET_PASSWORD, userId = userId)
+//            .auditOnError(event = AuditEvent.RESET_PASSWORD, userId = userId)
+//            .logOnSuccess(message = "Successfully updated password")
+//            .logOnError(errorMessage = "Failed to update password")
+//    }
 
 //    fun resetPassword(userId: UserId, currentPassword: String, password: String): Mono<UserDetails> {
 //        return userRepository.findByUserId(userId)
@@ -52,9 +51,14 @@ class UserService(
 //    }
 
     fun savePassword(user: UserPasswordRequest): Mono<UserDetails> {
-        return userRepository.save(
-            UserDetails(userId = user.userId, password = passwordEncoder.encode(user.password))
-        )
+        return userRepository.findByUserId(user.userId)
+            .flatMap {
+                createMonoError<UserDetails>(BadDataException(IOTError.IOT0101))
+            }
+            .switchIfEmpty {
+                val userDetails = UserDetails(userId = user.userId, password = passwordEncoder.encode(user.password))
+                userRepository.save(userDetails)
+            }
             .logOnSuccess("Successfully registered new user", additionalDetails = mapOf("userId" to user.userId))
             .logOnError(
                 errorMessage = "Failed to register new User",
@@ -65,6 +69,7 @@ class UserService(
 
     fun login(userDetails: AuthLoginRequest): Mono<UserDetails> {
         return userServiceGateway.getUserId(userDetails.email)
+            .onErrorResume { createMonoError(BadDataException(IOTError.IOT0102)) }
             .flatMap { userRepository.findByUserId(it.userId) }
             .flatMap { details ->
                 val matches = passwordEncoder.matches(userDetails.password, details.password)

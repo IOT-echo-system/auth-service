@@ -70,45 +70,45 @@ class OtpService(
 //            .logOnError(errorMessage = "Failed to generate otp")
 //    }
 
-    fun verifyOtp(verifyOtpRequest: VerifyOtpRequest): Mono<Token> {
-        return otpRepository.findByOtpIdAndState(verifyOtpRequest.otpId, OtpState.GENERATED)
-            .flatMap {
-                if (it.isValidOtp(verifyOtpRequest.otp)) {
-                    otpRepository.save(it.setVerified())
-                        .auditOnSuccess(
-                            event = AuditEvent.VERIFY_OTP,
-                            metadata = mapOf("otpId" to it.otpId),
-                            userId = it.userId
-                        )
-                } else {
-                    createMonoError<Otp>(BadDataException(IOTError.IOT0105))
-                        .auditOnError(
-                            event = AuditEvent.VERIFY_OTP,
-                            metadata = mapOf("otpId" to it.otpId),
-                            userId = it.userId
-                        )
-                }
-            }
-            .logOnSuccess(message = "Successfully verified otp")
-            .logOnError(errorMessage = "Failed to verify otp")
-            .flatMap {
-                tokenService.generateToken(
-                    userId = it.userId,
-                    expiredAt = LocalDateTime.now().plusMinutes(10),
-                    otpId = it.otpId
-                )
-            }
-    }
-
-    private fun sendEmail(otp: Otp, userDetails: UserDetails): Otp {
-        mqttPublisher.publish(
-            MqttTopicName.COMMUNICATION, CommunicationMessage(
-                type = CommunicationType.OTP,
-                to = otp.userId,
-                userId = otp.userId,
-                metadata = mapOf("otp" to otp.value)
-            )
-        )
-        return otp
-    }
+//    fun verifyOtp(verifyOtpRequest: VerifyOtpRequest): Mono<Token> {
+//        return otpRepository.findByOtpIdAndState(verifyOtpRequest.otpId, OtpState.GENERATED)
+//            .flatMap {
+//                if (it.isValidOtp(verifyOtpRequest.otp)) {
+//                    otpRepository.save(it.setVerified())
+//                        .auditOnSuccess(
+//                            event = AuditEvent.VERIFY_OTP,
+//                            metadata = mapOf("otpId" to it.otpId),
+//                            userId = it.userId
+//                        )
+//                } else {
+//                    createMonoError<Otp>(BadDataException(IOTError.IOT0105))
+//                        .auditOnError(
+//                            event = AuditEvent.VERIFY_OTP,
+//                            metadata = mapOf("otpId" to it.otpId),
+//                            userId = it.userId
+//                        )
+//                }
+//            }
+//            .logOnSuccess(message = "Successfully verified otp")
+//            .logOnError(errorMessage = "Failed to verify otp")
+//            .flatMap {
+//                tokenService.generateToken(
+//                    userId = it.userId,
+//                    expiredAt = LocalDateTime.now().plusMinutes(10),
+//                    otpId = it.otpId
+//                )
+//            }
+//    }
+//
+//    private fun sendEmail(otp: Otp, userDetails: UserDetails): Otp {
+//        mqttPublisher.publish(
+//            MqttTopicName.COMMUNICATION, CommunicationMessage(
+//                type = CommunicationType.OTP,
+//                to = otp.userId,
+//                userId = otp.userId,
+//                metadata = mapOf("otp" to otp.value)
+//            )
+//        )
+//        return otp
+//    }
 }

@@ -11,6 +11,6 @@ import java.time.LocalDateTime
 
 @Repository
 interface OtpRepository : ReactiveCrudRepository<Otp, OtpId> {
-    fun findByOtpIdAndState(otpId: String, otpState: OtpState): Mono<Otp>
+     fun findByOtpIdAndState(otpId: String, otpState: OtpState): Mono<Otp>
     fun findAllByStateAndCreatedAtBefore(otpState: OtpState, minusMinutes: LocalDateTime): Flux<Otp>
 }

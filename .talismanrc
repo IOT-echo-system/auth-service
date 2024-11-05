@@ -1,16 +1,20 @@
 fileignoreconfig:
-- filename: src/test/kotlin/com/robotutor/authService/service/TokenServiceTest.kt
-  checksum: eeb8d9995936ea84243b15e0d68d325851b6a23a5425fa70220f4827769e5c63
-- filename: src/main/kotlin/com/robotutor/authService/models/UserDetails.kt
-  checksum: 1e43c407b09e93268baa9cdbd890e18f2fcf1429e0649ce62aa75b8985752c37
-- filename: src/test/kotlin/com/robotutor/authService/service/UserServiceTest.kt
-  checksum: 51acb7e16eadf1f0409a3fa4af00990255a793305b6354b21a8914cb4972ae0e
-- filename: src/main/kotlin/com/robotutor/authService/controllers/AuthController.kt
-  checksum: e33ce2496b22aaead954443608a77e09711dc753bac77995ce9aa6693b4fa188
-- filename: src/test/kotlin/com/robotutor/authService/controller/AuthControllerTest.kt
-  checksum: 5b46f6dfccb437940cc54f34edb2220e1f2f52d9645192c9395532ab4ce32a87
+- filename: src/main/kotlin/com/robotutor/authService/services/TokenService.kt
+  checksum: fd53ed72b58afdbbf8b5b49a05a97545742cbf7c7e2f0f290b4489143e3e626f
+- filename: src/test/kotlin/com/robotutor/authService/builder/UserDetailsBuilder.kt
+  checksum: c8324e4053913af4d3a703d9eeb16f73180dea5f54a9937d08fa6d8baaf4e0fd
 - filename: src/main/kotlin/com/robotutor/authService/services/UserService.kt
-  checksum: 93cfa0d2fe17b10bffd9f3f945cd0aac5c65b1a036334329a7e3f27ee87debd9
-- filename: src/main/kotlin/com/robotutor/authService/controllers/view/UserView.kt
-  checksum: 131e7050383892f71bb72679c1a115f4e999c1209e69bcdad837a855fd07f525
+  checksum: 9ee599d4fa990061ec972188d731b4f45fab021ce6c14db3fb32cef40aa11268
+- filename: src/main/kotlin/com/robotutor/authService/controllers/AuthController.kt
+  checksum: 20e76883c45591d8f20a487f8ad6c168ae4f258d67e9eff513329d4f1daec022
+- filename: src/main/kotlin/com/robotutor/authService/models/UserDetails.kt
+  checksum: 900af98600d43e551e1f49d804fba99c6edb58c6f90e8f5b49b0c2fa4f22ea1c
+- filename: src/test/kotlin/com/robotutor/authService/service/OtpServiceTest.kt
+  checksum: 61a439cfabe815315574d7df8aeb629f7acaa8604704fcdf880525433ea1f41e
+- filename: src/test/kotlin/com/robotutor/authService/service/TokenServiceTest.kt
+  checksum: 5b39c852ad4577dea6f82a4f31a919288adf42e3dffe8595dd6104e4adce24a5
+- filename: src/test/kotlin/com/robotutor/authService/controller/AuthControllerTest.kt
+  checksum: 5f0d7e4b7646661fe560178d3b15cf26912f9ea7d283d5cf6a0f6ee134760b9d
+- filename: src/test/kotlin/com/robotutor/authService/service/UserServiceTest.kt
+  checksum: e1c2347f56d6f73f046b463eb212c9d8f30eef8bb9f5186444492f4b15d3c7ea
 version: ""
