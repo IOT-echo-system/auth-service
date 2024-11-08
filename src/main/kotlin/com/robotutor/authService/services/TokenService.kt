@@ -1,17 +1,22 @@
 package com.robotutor.authService.services
 
-
+import com.robotutor.authService.controllers.view.ValidateTokenResponse
+import com.robotutor.authService.exceptions.IOTError
 import com.robotutor.authService.models.IdType
 import com.robotutor.authService.models.OtpId
 import com.robotutor.authService.models.Token
 import com.robotutor.authService.models.UserId
 import com.robotutor.authService.repositories.TokenRepository
 import com.robotutor.iot.auditOnSuccess
+import com.robotutor.iot.exceptions.UnAuthorizedException
 import com.robotutor.iot.models.AuditEvent
 import com.robotutor.iot.service.IdGeneratorService
+import com.robotutor.iot.utils.createMonoError
+import com.robotutor.loggingstarter.logOnError
 import com.robotutor.loggingstarter.logOnSuccess
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.switchIfEmpty
 import java.time.LocalDateTime
 
 @Service
@@ -20,28 +25,22 @@ class TokenService(
     private val idGeneratorService: IdGeneratorService,
 ) {
 
-//    fun login(userLoginRequest: UserLoginRequest): Mono<Token> {
-//        return userService.verifyCredentials(userLoginRequest)
-//            .flatMap { generateToken(userId = it.userId, expiredAt = LocalDateTime.now().plusDays(7)) }
-//    }
-
-
-//    fun validate(token: String): Mono<ValidateTokenResponse> {
-//        return tokenRepository.findByValueAndExpiredAtAfter(token)
-//            .map {
-//                ValidateTokenResponse(
-//                    userId = it.userId,
-//                    projectId = it.accountId ?: "",
-//                    roleId = it.roleId ?: "",
-//                    boardId = it.boardId
-//                )
-//            }
-//            .switchIfEmpty {
-//                createMonoError(UnAuthorizedException(IOTError.IOT0103))
-//            }
-//            .logOnSuccess(message = "Successfully validated token")
-//            .logOnError(errorCode = IOTError.IOT0103.errorCode, errorMessage = "Failed to validate token")
-//    }
+    fun validate(token: String): Mono<ValidateTokenResponse> {
+        return tokenRepository.findByValueAndExpiredAtAfter(token)
+            .map {
+                ValidateTokenResponse(
+                    userId = it.userId,
+                    projectId = it.accountId ?: "",
+                    roleId = it.roleId ?: "",
+                    boardId = it.boardId
+                )
+            }
+            .switchIfEmpty {
+                createMonoError(UnAuthorizedException(IOTError.IOT0103))
+            }
+            .logOnSuccess(message = "Successfully validated token")
+            .logOnError(errorCode = IOTError.IOT0103.errorCode, errorMessage = "Failed to validate token")
+    }
 
     fun generateToken(
         userId: UserId,

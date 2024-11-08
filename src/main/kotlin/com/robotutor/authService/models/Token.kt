@@ -6,6 +6,7 @@ import org.springframework.data.annotation.TypeAlias
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 const val TOKEN_COLLECTION = "tokens"
 
@@ -57,7 +58,8 @@ data class Token(
 
         private fun generateTokenValue(length: Int = 120): String {
             val chars = ('a'..'z') + ('A'..'Z') + ('0'..'9') + "_-".split("")
-            return List(length + 10) { chars.random() }.joinToString("").substring(0, length)
+            val token = List(length + 10) { chars.random() }.joinToString("").substring(0, length)
+            return token + LocalDateTime.now().toEpochSecond(ZoneOffset.UTC).toString()
         }
     }
 }
