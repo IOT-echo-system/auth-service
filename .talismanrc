@@ -17,4 +17,6 @@ fileignoreconfig:
   checksum: 5f0d7e4b7646661fe560178d3b15cf26912f9ea7d283d5cf6a0f6ee134760b9d
 - filename: src/test/kotlin/com/robotutor/authService/service/UserServiceTest.kt
   checksum: e1c2347f56d6f73f046b463eb212c9d8f30eef8bb9f5186444492f4b15d3c7ea
+- filename: src/main/resources/application.yml
+  checksum: f9b37b1bab4244c6d0e6d72ba2541d457d0c3faed367a9505664420fc00ffe62
 version: ""

@@ -9,6 +9,8 @@ spring:
     name: AUTH-SERVICE
 
 app:
+  secret:
+    key: ${JWT_SECRET_KEY}
   mqtt:
     broker: ${MQTT_BROKER}
     username: ${MQTT_USERNAME}
