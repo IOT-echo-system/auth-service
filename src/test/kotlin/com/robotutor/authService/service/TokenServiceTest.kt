@@ -4,7 +4,6 @@ import com.robotutor.authService.builder.TokenBuilder
 import com.robotutor.authService.models.IdType
 import com.robotutor.authService.repositories.TokenRepository
 import com.robotutor.authService.services.TokenService
-import com.robotutor.authService.utils.JwtUtils
 import com.robotutor.iot.service.IdGeneratorService
 import com.robotutor.iot.services.MqttPublisher
 import com.robotutor.iot.utils.assertNextWith
@@ -21,14 +20,9 @@ class TokenServiceTest {
 
     private val tokenRepository = mockk<TokenRepository>()
     private val idGeneratorService = mockk<IdGeneratorService>()
-    private val jwtUtils = mockk<JwtUtils>()
     private val mqttPublisher = mockk<MqttPublisher>()
 
-    private val tokenService = TokenService(
-        tokenRepository = tokenRepository,
-        idGeneratorService = idGeneratorService,
-        jwtUtils = jwtUtils
-    )
+    private val tokenService = TokenService(tokenRepository = tokenRepository, idGeneratorService = idGeneratorService)
     private val mockTime = LocalDateTime.of(2024, 1, 1, 1, 1)
 
     @BeforeEach
@@ -46,12 +40,10 @@ class TokenServiceTest {
 
     @Test
     fun `should generate token`() {
-        val token = TokenBuilder(tokenId = "00001", value = "tokenValue", createdAt = mockTime, expiredAt = mockTime)
-            .build()
-
+        val token =
+            TokenBuilder(tokenId = "00001", value = "tokenValue", createdAt = mockTime, expiredAt = mockTime).build()
         every { idGeneratorService.generateId(any()) } returns Mono.just("00001")
         every { tokenRepository.save(any()) } returns Mono.just(token)
-        every { jwtUtils.generateToken(any()) } returns "tokenValue"
 
 
         val response = tokenService.generateToken(userId = "001")
@@ -61,7 +53,6 @@ class TokenServiceTest {
             it shouldBe token
             verify(exactly = 1) {
                 idGeneratorService.generateId(IdType.TOKEN_ID)
-                jwtUtils.generateToken("001")
             }
         }
     }

@@ -43,7 +43,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.security:spring-security-crypto:5.6.4")
-    implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("com.robotutor:logging-starter:1.0.0")
     implementation("com.robotutor:robotutor-tech-utils:1.0.11")
     implementation("com.robotutor:web-client-starter:1.0.1")
