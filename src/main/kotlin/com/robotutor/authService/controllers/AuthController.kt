@@ -1,10 +1,8 @@
 package com.robotutor.authService.controllers
 
 import com.robotutor.authService.controllers.view.*
-import com.robotutor.authService.services.OtpService
 import com.robotutor.authService.services.TokenService
 import com.robotutor.authService.services.UserService
-import com.robotutor.iot.utils.models.UserAuthenticationData
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
@@ -27,6 +25,11 @@ class AuthController(
             .map { TokenResponse(it.value) }
     }
 
+    @GetMapping("/validate")
+    fun validateToken(@RequestHeader("authorization") token: String = ""): Mono<ValidateTokenResponse> {
+        return tokenService.validate(token)
+    }
+
 //    @GetMapping("/logout")
 //    fun logout(
 //        @RequestHeader("authorization") token: String,
@@ -35,10 +38,6 @@ class AuthController(
 //        return tokenService.logout(token, authenticationData).map { LogoutResponse(true) }
 //    }
 
-//    @GetMapping("/validate")
-//    fun validateToken(@RequestHeader("authorization") token: String = ""): Mono<ValidateTokenResponse> {
-//        return tokenService.validate(token)
-//    }
 
 //    @PostMapping("/generate-otp")
 //    fun generateOtp(@RequestBody @Validated generateOtpRequest: GenerateOtpRequest): Mono<OtpResponse> {

@@ -36,13 +36,13 @@ data class Token(
         fun generate(
             tokenId: String,
             userId: UserId,
+            value: String,
             expiredAt: LocalDateTime,
             otpId: OtpId?,
             accountId: String?,
             roleId: String?,
             boardId: String?
         ): Token {
-            val value = "RTT_" + generateTokenValue(length = if (boardId.isNullOrBlank()) 120 else 32)
             return Token(
                 tokenId = tokenId,
                 userId = userId,
@@ -53,11 +53,6 @@ data class Token(
                 roleId = roleId,
                 boardId = boardId
             )
-        }
-
-        private fun generateTokenValue(length: Int = 120): String {
-            val chars = ('a'..'z') + ('A'..'Z') + ('0'..'9') + "_-".split("")
-            return List(length + 10) { chars.random() }.joinToString("").substring(0, length)
         }
     }
 }
