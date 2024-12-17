@@ -10,7 +10,7 @@ import com.robotutor.authService.repositories.UserRepository
 import com.robotutor.authService.services.UserService
 import com.robotutor.iot.exceptions.BadDataException
 import com.robotutor.iot.exceptions.DataNotFoundException
-import com.robotutor.iot.services.MqttPublisher
+import com.robotutor.iot.services.KafkaPublisher
 import com.robotutor.iot.utils.assertErrorWith
 import com.robotutor.iot.utils.assertNextWith
 import io.kotest.matchers.shouldBe
@@ -24,7 +24,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 
 class UserServiceTest {
-    private val mqttPublisher = mockk<MqttPublisher>()
+    private val kafkaPublisher = mockk<KafkaPublisher>()
     private val userRepository = mockk<UserRepository>()
     private val userServiceGateway = mockk<UserServiceGateway>()
     private val passwordEncoder = mockk<PasswordEncoder>()
@@ -41,7 +41,7 @@ class UserServiceTest {
         clearAllMocks()
         mockkStatic(LocalDateTime::class)
         every { LocalDateTime.now(ZoneId.of("UTC")) } returns mockTime
-        every { mqttPublisher.publish(any(), any()) } just Runs
+        every { kafkaPublisher.publish(any(), any(), any()) } just Runs
     }
 
     @AfterEach
@@ -105,7 +105,7 @@ class UserServiceTest {
         every { passwordEncoder.matches(any(), any()) } returns true
 
         val response = userService.login(AuthLoginRequest("email", "password"))
-            .contextWrite { it.put(MqttPublisher::class.java, mqttPublisher) }
+            .contextWrite { it.put(KafkaPublisher::class.java, kafkaPublisher) }
 
         assertNextWith(response) {
             it shouldBe user
@@ -122,7 +122,7 @@ class UserServiceTest {
         every { userServiceGateway.getUserId(any()) } returns Mono.error(DataNotFoundException(IOTError.IOT0102))
 
         val response = userService.login(userDetails)
-            .contextWrite { it.put(MqttPublisher::class.java, mqttPublisher) }
+            .contextWrite { it.put(KafkaPublisher::class.java, kafkaPublisher) }
 
         assertErrorWith(response) {
             it shouldBe BadDataException(IOTError.IOT0102)
@@ -147,7 +147,7 @@ class UserServiceTest {
         every { passwordEncoder.matches(any(), any()) } returns false
 
         val response = userService.login(userDetails)
-            .contextWrite { it.put(MqttPublisher::class.java, mqttPublisher) }
+            .contextWrite { it.put(KafkaPublisher::class.java, kafkaPublisher) }
 
         assertErrorWith(response) {
             it shouldBe BadDataException(IOTError.IOT0102)

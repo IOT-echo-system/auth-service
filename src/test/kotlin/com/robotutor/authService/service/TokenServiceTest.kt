@@ -5,7 +5,7 @@ import com.robotutor.authService.models.IdType
 import com.robotutor.authService.repositories.TokenRepository
 import com.robotutor.authService.services.TokenService
 import com.robotutor.iot.service.IdGeneratorService
-import com.robotutor.iot.services.MqttPublisher
+import com.robotutor.iot.services.KafkaPublisher
 import com.robotutor.iot.utils.assertNextWith
 import io.kotest.matchers.shouldBe
 import io.mockk.*
@@ -20,7 +20,7 @@ class TokenServiceTest {
 
     private val tokenRepository = mockk<TokenRepository>()
     private val idGeneratorService = mockk<IdGeneratorService>()
-    private val mqttPublisher = mockk<MqttPublisher>()
+    private val kafkaPublisher = mockk<KafkaPublisher>()
 
     private val tokenService = TokenService(tokenRepository = tokenRepository, idGeneratorService = idGeneratorService)
     private val mockTime = LocalDateTime.of(2024, 1, 1, 1, 1)
@@ -29,7 +29,7 @@ class TokenServiceTest {
     fun setUp() {
         clearAllMocks()
         mockkStatic(LocalDateTime::class)
-        every { mqttPublisher.publish(any(), any()) } just Runs
+        every { kafkaPublisher.publish(any(), any(), any()) } just Runs
         every { LocalDateTime.now(ZoneId.of("UTC")) } returns mockTime
     }
 
@@ -47,7 +47,7 @@ class TokenServiceTest {
 
 
         val response = tokenService.generateToken(userId = "001")
-            .contextWrite { it.put(MqttPublisher::class.java, mqttPublisher) }
+            .contextWrite { it.put(KafkaPublisher::class.java, kafkaPublisher) }
 
         assertNextWith(response) {
             it shouldBe token

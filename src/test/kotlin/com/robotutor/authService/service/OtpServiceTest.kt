@@ -1,28 +1,17 @@
 package com.robotutor.authService.service
 
-import com.robotutor.authService.builder.OtpBuilder
-import com.robotutor.authService.builder.TokenBuilder
-import com.robotutor.authService.controllers.view.GenerateOtpRequest
-import com.robotutor.authService.controllers.view.VerifyOtpRequest
-import com.robotutor.authService.exceptions.IOTError
-import com.robotutor.authService.models.IdType
-import com.robotutor.authService.models.OtpState
-import com.robotutor.authService.models.UserDetails
 import com.robotutor.authService.repositories.OtpRepository
 import com.robotutor.authService.services.OtpService
 import com.robotutor.authService.services.TokenService
 import com.robotutor.authService.services.UserService
-import com.robotutor.iot.exceptions.BadDataException
-import com.robotutor.iot.exceptions.TooManyRequestsException
-import com.robotutor.iot.models.*
 import com.robotutor.iot.service.IdGeneratorService
-import com.robotutor.iot.services.MqttPublisher
-import io.kotest.matchers.shouldBe
-import io.mockk.*
+import com.robotutor.iot.services.KafkaPublisher
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkStatic
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
-import reactor.core.publisher.Mono
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -31,13 +20,12 @@ class OtpServiceTest {
     private val otpRepository = mockk<OtpRepository>()
     private val tokenService = mockk<TokenService>()
     private val userService = mockk<UserService>()
-    private val mqttPublisher = mockk<MqttPublisher>()
+    private val kafkaPublisher = mockk<KafkaPublisher>()
     private val otpService = OtpService(
         idGeneratorService = idGeneratorService,
         otpRepository = otpRepository,
         tokenService = tokenService,
         userService = userService,
-        mqttPublisher = mqttPublisher
     )
     private val mockTime = LocalDateTime.of(2024, 1, 1, 1, 1)
 
@@ -45,7 +33,7 @@ class OtpServiceTest {
     fun setUp() {
         clearAllMocks()
         mockkStatic(LocalDateTime::class)
-        every { mqttPublisher.publish(any(), any()) } returns Unit
+        every { kafkaPublisher.publish(any(), any(), any()) } returns Unit
         every { LocalDateTime.now(ZoneId.of("UTC")) } returns mockTime
 
     }

@@ -7,13 +7,20 @@ spring:
       uri: ${MONGODB_URL}/auth-service
   application:
     name: AUTH-SERVICE
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_BROKERS:localhost:3030}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: reactive-audit-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest
+    listener:
+      ack-mode: manual
 
 app:
-  mqtt:
-    broker: ${MQTT_BROKER}
-    username: ${MQTT_USERNAME}
-    clientId: ${spring.application.name}
-    password: ${MQTT_PASSWORD}
   utils:
     auth-service-base-url: http://localhost:${server.port}
     internal-access-token: ${INTERNAL_ACCESS_TOKEN}

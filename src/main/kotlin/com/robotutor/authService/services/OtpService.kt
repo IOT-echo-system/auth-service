@@ -1,27 +1,8 @@
 package com.robotutor.authService.services
 
-import com.robotutor.authService.controllers.view.VerifyOtpRequest
-import com.robotutor.authService.exceptions.IOTError
-import com.robotutor.authService.models.Otp
-import com.robotutor.authService.models.OtpState
-import com.robotutor.authService.models.Token
-import com.robotutor.authService.models.UserDetails
 import com.robotutor.authService.repositories.OtpRepository
-import com.robotutor.iot.auditOnError
-import com.robotutor.iot.auditOnSuccess
-import com.robotutor.iot.exceptions.BadDataException
-import com.robotutor.iot.models.AuditEvent
-import com.robotutor.iot.models.CommunicationMessage
-import com.robotutor.iot.models.CommunicationType
-import com.robotutor.iot.models.MqttTopicName
 import com.robotutor.iot.service.IdGeneratorService
-import com.robotutor.iot.services.MqttPublisher
-import com.robotutor.iot.utils.createMonoError
-import com.robotutor.loggingstarter.logOnError
-import com.robotutor.loggingstarter.logOnSuccess
 import org.springframework.stereotype.Service
-import reactor.core.publisher.Mono
-import java.time.LocalDateTime
 
 @Service
 class OtpService(
@@ -29,7 +10,6 @@ class OtpService(
     private val otpRepository: OtpRepository,
     private val tokenService: TokenService,
     private val userService: UserService,
-    private val mqttPublisher: MqttPublisher
 ) {
 //    fun generateOtp(generateOtpRequest: GenerateOtpRequest): Mono<Otp> {
 //        return otpRepository.countByEmailAndCreatedAtAfter(
