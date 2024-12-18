@@ -56,7 +56,11 @@ class UserService(
                 createMonoError<UserDetails>(BadDataException(IOTError.IOT0101))
             }
             .switchIfEmpty {
-                val userDetails = UserDetails(userId = user.userId, password = passwordEncoder.encode(user.password))
+                val userDetails = UserDetails(
+                    userId = user.userId,
+                    password = passwordEncoder.encode(user.password),
+                    roleId = "" // TODO: Update the role id here with default one.
+                )
                 userRepository.save(userDetails)
             }
             .logOnSuccess("Successfully registered new user", additionalDetails = mapOf("userId" to user.userId))

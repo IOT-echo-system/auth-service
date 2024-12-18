@@ -3,9 +3,8 @@ package com.robotutor.authService.services
 import com.robotutor.authService.controllers.view.ValidateTokenResponse
 import com.robotutor.authService.exceptions.IOTError
 import com.robotutor.authService.models.IdType
-import com.robotutor.authService.models.OtpId
 import com.robotutor.authService.models.Token
-import com.robotutor.authService.models.UserId
+import com.robotutor.authService.models.TokenType
 import com.robotutor.authService.repositories.TokenRepository
 import com.robotutor.iot.auditOnSuccess
 import com.robotutor.iot.exceptions.UnAuthorizedException
@@ -28,12 +27,11 @@ class TokenService(
     fun validate(token: String): Mono<ValidateTokenResponse> {
         return tokenRepository.findByValueAndExpiredAtAfter(token)
             .map {
-                ValidateTokenResponse(
-                    userId = it.userId,
-                    projectId = it.accountId ?: "",
-                    roleId = it.roleId ?: "",
-                    boardId = it.boardId
-                )
+                when (it.type) {
+                    TokenType.USER -> ValidateTokenResponse(userId = it.identifier, roleId = it.roleId)
+                    TokenType.OTP -> ValidateTokenResponse(userId = it.identifier, roleId = it.roleId)
+                    TokenType.DEVICE -> ValidateTokenResponse(userId = it.identifier, roleId = it.roleId)
+                }
             }
             .switchIfEmpty {
                 createMonoError(UnAuthorizedException(IOTError.IOT0103))
@@ -43,30 +41,30 @@ class TokenService(
     }
 
     fun generateToken(
-        userId: UserId,
+        identifier: String,
+        type: TokenType,
+        roleId: String,
         expiredAt: LocalDateTime = LocalDateTime.now().plusDays(7),
-        otpId: OtpId? = null,
-        accountId: String? = null,
-        roleId: String? = null,
-        boardId: String? = null
     ): Mono<Token> {
         return idGeneratorService.generateId(IdType.TOKEN_ID)
             .flatMap { tokenId ->
                 tokenRepository.save(
                     Token.generate(
                         tokenId = tokenId,
-                        userId = userId,
+                        identifier = identifier,
                         expiredAt = expiredAt,
-                        otpId = otpId,
-                        accountId = accountId,
                         roleId = roleId,
-                        boardId = boardId
+                        type = type,
                     )
                 )
                     .auditOnSuccess(
                         event = AuditEvent.GENERATE_TOKEN,
-                        metadata = mapOf("tokenId" to tokenId),
-                        userId = userId
+                        metadata = mapOf(
+                            "tokenId" to tokenId,
+                            "identifier" to identifier,
+                            "type" to type,
+                            "roleId" to roleId
+                        ),
                     )
             }
             .logOnSuccess(message = "Successfully generated token")

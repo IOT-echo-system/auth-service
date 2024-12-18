@@ -1,10 +1,9 @@
 package com.robotutor.authService.controllers
 
 import com.robotutor.authService.controllers.view.*
-import com.robotutor.authService.services.OtpService
+import com.robotutor.authService.models.TokenType
 import com.robotutor.authService.services.TokenService
 import com.robotutor.authService.services.UserService
-import com.robotutor.iot.utils.models.UserAuthenticationData
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
@@ -23,7 +22,7 @@ class AuthController(
     @PostMapping("/login")
     fun login(@RequestBody @Validated userDetails: AuthLoginRequest): Mono<TokenResponse> {
         return userService.login(userDetails)
-            .flatMap { tokenService.generateToken(it.userId) }
+            .flatMap { tokenService.generateToken(identifier = it.userId, type = TokenType.USER, roleId = it.roleId) }
             .map { TokenResponse(it.value) }
     }
 

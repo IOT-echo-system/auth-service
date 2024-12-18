@@ -1,5 +1,6 @@
 package com.robotutor.authService.builder
 
+import com.robotutor.authService.models.RoleId
 import com.robotutor.authService.models.UserDetails
 import org.bson.types.ObjectId
 import java.time.LocalDateTime
@@ -12,6 +13,7 @@ data class UserDetailsBuilder(
     val updatedAt: LocalDateTime = LocalDateTime.of(2024, 1, 1, 1, 1),
     val passwordAttempts: Int = 5,
     val isLocked: Boolean = false,
+    val roleId: RoleId = ""
 ) {
     fun build(): UserDetails {
         return UserDetails(
@@ -21,7 +23,8 @@ data class UserDetailsBuilder(
             registeredAt = registeredAt,
             updatedAt = updatedAt,
             passwordAttempts = passwordAttempts,
-            isLocked = isLocked
+            isLocked = isLocked,
+            roleId = roleId
         )
     }
 }

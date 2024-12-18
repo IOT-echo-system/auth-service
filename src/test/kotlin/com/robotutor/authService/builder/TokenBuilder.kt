@@ -1,6 +1,8 @@
 package com.robotutor.authService.builder
 
+import com.robotutor.authService.models.RoleId
 import com.robotutor.authService.models.Token
+import com.robotutor.authService.models.TokenType
 import org.bson.types.ObjectId
 import java.time.LocalDateTime
 
@@ -10,8 +12,9 @@ data class TokenBuilder(
     val value: String = "token value",
     val createdAt: LocalDateTime = LocalDateTime.now(),
     val expiredAt: LocalDateTime = LocalDateTime.now(),
-    val userId: String = "userID",
-    val otpId: String? = "otpId"
+    val identifier: String = "userID",
+    val roleId: RoleId = "otpId",
+    val type: TokenType = TokenType.USER,
 ) {
     fun build(): Token {
         return Token(
@@ -19,9 +22,8 @@ data class TokenBuilder(
             tokenId = tokenId,
             value = value,
             createdAt = createdAt,
-            expiredAt = expiredAt,
-            userId = userId,
-            otpId = otpId
-        )
+            expiredAt = expiredAt, roleId = roleId, type = type, identifier = identifier,
+
+            )
     }
 }

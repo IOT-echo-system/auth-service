@@ -8,20 +8,17 @@ import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-const val USER_COLLECTION = "users"
+const val DEVICE_COLLECTION = "devices"
 
-@TypeAlias("User")
-@Document(USER_COLLECTION)
-data class UserDetails(
+@TypeAlias("Device")
+@Document(DEVICE_COLLECTION)
+data class DeviceDetails(
     @Id
     var id: ObjectId? = null,
     @Indexed(unique = true)
-    val userId: UserId,
+    val userId: DeviceId,
     var password: String,
     val registeredAt: LocalDateTime = LocalDateTime.now(ZoneId.of("UTC")),
     var updatedAt: LocalDateTime = LocalDateTime.now(ZoneId.of("UTC")),
-    val passwordAttempts: Int = 5,
-    val isLocked: Boolean = false,
-    val roleId: RoleId
 )
-typealias UserId = String
+typealias DeviceId = String

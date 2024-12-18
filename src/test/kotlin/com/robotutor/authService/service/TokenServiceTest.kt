@@ -2,6 +2,7 @@ package com.robotutor.authService.service
 
 import com.robotutor.authService.builder.TokenBuilder
 import com.robotutor.authService.models.IdType
+import com.robotutor.authService.models.TokenType
 import com.robotutor.authService.repositories.TokenRepository
 import com.robotutor.authService.services.TokenService
 import com.robotutor.iot.service.IdGeneratorService
@@ -46,7 +47,7 @@ class TokenServiceTest {
         every { tokenRepository.save(any()) } returns Mono.just(token)
 
 
-        val response = tokenService.generateToken(userId = "001")
+        val response = tokenService.generateToken(identifier = "001", type = TokenType.USER, roleId = "")
             .contextWrite { it.put(KafkaPublisher::class.java, kafkaPublisher) }
 
         assertNextWith(response) {
