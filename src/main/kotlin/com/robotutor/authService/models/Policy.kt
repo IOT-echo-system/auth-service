@@ -15,11 +15,8 @@ data class Policy(
     var id: ObjectId? = null,
     @Indexed(unique = true)
     val policyId: PolicyId,
-    val policyName: PolicyName,
+    @Indexed(unique = true)
+    val name: String,
 )
 
 typealias PolicyId = String
-
-enum class PolicyName {
-
-}
