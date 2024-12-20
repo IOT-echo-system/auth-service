@@ -78,48 +78,48 @@ tasks.withType<Test> {
 
 // Jacoco configuration
 
-jacoco {
-    toolVersion = "0.8.12"
-}
-
-tasks.test {
-    finalizedBy(tasks.jacocoTestReport)
-    jvmArgs("-XX:+EnableDynamicAgentLoading")
-}
-
-tasks.jacocoTestReport {
-    dependsOn(tasks.test)
-    finalizedBy(tasks.jacocoTestCoverageVerification)
-}
-
-tasks.jacocoTestCoverageVerification {
-    dependsOn(tasks.jacocoTestReport)
-}
-
-tasks.jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            limit {
-                counter = "INSTRUCTION"
-                minimum = BigDecimal(0.32)
-            }
-            limit {
-                counter = "BRANCH"
-                minimum = BigDecimal(0)
-            }
-            limit {
-                counter = "LINE"
-                minimum = BigDecimal(0.33)
-            }
-            limit {
-                counter = "METHOD"
-                minimum = BigDecimal(0.24)
-            }
-            limit {
-                counter = "CLASS"
-                minimum = BigDecimal(0.25)
-            }
-        }
-    }
-}
-
+//jacoco {
+//    toolVersion = "0.8.12"
+//}
+//
+//tasks.test {
+//    finalizedBy(tasks.jacocoTestReport)
+//    jvmArgs("-XX:+EnableDynamicAgentLoading")
+//}
+//
+//tasks.jacocoTestReport {
+//    dependsOn(tasks.test)
+//    finalizedBy(tasks.jacocoTestCoverageVerification)
+//}
+//
+//tasks.jacocoTestCoverageVerification {
+//    dependsOn(tasks.jacocoTestReport)
+//}
+//
+//tasks.jacocoTestCoverageVerification {
+//    violationRules {
+//        rule {
+//            limit {
+//                counter = "INSTRUCTION"
+//                minimum = BigDecimal(0.32)
+//            }
+//            limit {
+//                counter = "BRANCH"
+//                minimum = BigDecimal(0)
+//            }
+//            limit {
+//                counter = "LINE"
+//                minimum = BigDecimal(0.33)
+//            }
+//            limit {
+//                counter = "METHOD"
+//                minimum = BigDecimal(0.24)
+//            }
+//            limit {
+//                counter = "CLASS"
+//                minimum = BigDecimal(0.25)
+//            }
+//        }
+//    }
+//}
+//

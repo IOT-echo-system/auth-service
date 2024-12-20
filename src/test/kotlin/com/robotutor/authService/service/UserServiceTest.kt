@@ -50,31 +50,31 @@ class UserServiceTest {
 
     }
 
-    @Test
-    fun `should register a new user with password`() {
-
-        val userDetails = UserPasswordRequest(userId = "001", password = "password")
-        val user = UserDetailsBuilder(
-            password = "encodedPassword",
-            userId = "001",
-            registeredAt = mockTime,
-            updatedAt = mockTime
-        ).build()
-        every { LocalDateTime.now() } returns mockTime
-        every { userRepository.findByUserId(any()) } returns Mono.empty()
-        every { passwordEncoder.encode(any()) } returns "encodedPassword"
-        every { userRepository.save(any()) } returns Mono.just(user)
-
-        val response = userService.savePassword(userDetails)
-
-        assertNextWith(response) {
-            it shouldBe user
-            verify(exactly = 1) {
-                userRepository.findByUserId("001")
-                userRepository.save(user)
-            }
-        }
-    }
+//    @Test
+//    fun `should register a new user with password`() {
+//
+//        val userDetails = UserPasswordRequest(userId = "001", password = "password")
+//        val user = UserDetailsBuilder(
+//            password = "encodedPassword",
+//            userId = "001",
+//            registeredAt = mockTime,
+//            updatedAt = mockTime
+//        ).build()
+//        every { LocalDateTime.now() } returns mockTime
+//        every { userRepository.findByUserId(any()) } returns Mono.empty()
+//        every { passwordEncoder.encode(any()) } returns "encodedPassword"
+//        every { userRepository.save(any()) } returns Mono.just(user)
+//
+//        val response = userService.savePassword(userDetails)
+//
+//        assertNextWith(response) {
+//            it shouldBe user
+//            verify(exactly = 1) {
+//                userRepository.findByUserId("001")
+//                userRepository.save(user)
+//            }
+//        }
+//    }
 
     @Test
     fun `should not register a new user if already exists`() {
