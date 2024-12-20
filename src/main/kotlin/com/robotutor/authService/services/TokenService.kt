@@ -8,7 +8,6 @@ import com.robotutor.authService.models.TokenType
 import com.robotutor.authService.repositories.TokenRepository
 import com.robotutor.iot.auditOnSuccess
 import com.robotutor.iot.exceptions.UnAuthorizedException
-import com.robotutor.iot.models.AuditEvent
 import com.robotutor.iot.service.IdGeneratorService
 import com.robotutor.iot.utils.createMonoError
 import com.robotutor.loggingstarter.logOnError
@@ -58,7 +57,7 @@ class TokenService(
                     )
                 )
                     .auditOnSuccess(
-                        event = AuditEvent.GENERATE_TOKEN,
+                        event = "GENERATE_TOKEN",
                         metadata = mapOf(
                             "tokenId" to tokenId,
                             "identifier" to identifier,

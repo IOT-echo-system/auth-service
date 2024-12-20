@@ -9,7 +9,6 @@ import com.robotutor.authService.repositories.UserRepository
 import com.robotutor.iot.auditOnError
 import com.robotutor.iot.auditOnSuccess
 import com.robotutor.iot.exceptions.BadDataException
-import com.robotutor.iot.models.AuditEvent
 import com.robotutor.iot.utils.createMono
 import com.robotutor.iot.utils.createMonoError
 import com.robotutor.loggingstarter.logOnError
@@ -68,7 +67,7 @@ class UserService(
                 errorMessage = "Failed to register new User",
                 additionalDetails = mapOf("userId" to user.userId)
             )
-//            .auditOnSuccess(AuditEvent.SAVE_PASSWORD)
+            .auditOnSuccess("SAVE_PASSWORD", userId = user.userId)
     }
 
     fun login(userDetails: AuthLoginRequest): Mono<UserDetails> {
@@ -79,10 +78,10 @@ class UserService(
                 val matches = passwordEncoder.matches(userDetails.password, details.password)
                 if (matches) {
                     createMono(details)
-                        .auditOnSuccess(event = AuditEvent.VERIFY_PASSWORD, userId = details.userId)
+                        .auditOnSuccess(event = "VERIFY_PASSWORD", userId = details.userId)
                 } else {
                     createMonoError<UserDetails>(BadDataException(IOTError.IOT0102))
-                        .auditOnError(event = AuditEvent.VERIFY_PASSWORD, userId = details.userId)
+                        .auditOnError(event = "VERIFY_PASSWORD", userId = details.userId)
                 }
             }
             .logOnSuccess("Successfully verified password")

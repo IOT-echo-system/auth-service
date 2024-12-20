@@ -6,7 +6,7 @@ fileignoreconfig:
 - filename: src/main/kotlin/com/robotutor/authService/controllers/AuthController.kt
   checksum: 20e76883c45591d8f20a487f8ad6c168ae4f258d67e9eff513329d4f1daec022
 - filename: src/main/kotlin/com/robotutor/authService/services/UserService.kt
-  checksum: 138209c9616c721ed98e67e4de16b445957d79b092227db8ea343138b0007899
+  checksum: a7365c646d5bf09104569cb4d25f85328a99baee60b5f1168ff68eebea3e1547
 - filename: src/test/kotlin/com/robotutor/authService/service/OtpServiceTest.kt
   checksum: 61a439cfabe815315574d7df8aeb629f7acaa8604704fcdf880525433ea1f41e
 - filename: src/test/kotlin/com/robotutor/authService/service/TokenServiceTest.kt
