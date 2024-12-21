@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 
 const val POLICY_COLLECTION = "policies"
 
-@TypeAlias("Role")
+@TypeAlias("Policy")
 @Document(POLICY_COLLECTION)
 data class Policy(
     @Id
