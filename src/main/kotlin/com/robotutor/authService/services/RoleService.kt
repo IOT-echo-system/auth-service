@@ -15,7 +15,7 @@ class RoleService(
     private val policyService: PolicyService
 ) {
     fun createRole(name: String): Mono<Role> {
-        return idGeneratorService.generateId(IdType.POLICY_ID).flatMap {
+        return idGeneratorService.generateId(IdType.ROLE_ID).flatMap {
             roleRepository.save(Role(roleId = it, name = name))
         }
             .logOnSuccess("Successfully created role: $name")
