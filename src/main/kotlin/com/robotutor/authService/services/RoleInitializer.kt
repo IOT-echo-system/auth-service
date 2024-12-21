@@ -79,6 +79,7 @@ class RoleInitializer(
                             }
                     }
             )
-            .subscribe()
+            .then()
+            .block()
     }
 }

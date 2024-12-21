@@ -32,6 +32,7 @@ class PolicyInitializer(private val policyService: PolicyService) : ApplicationR
             .flatMapSequential {
                 policyService.createPolicy(it)
             }
-            .subscribe()
+            .then()
+            .block()
     }
 }
