@@ -39,7 +39,7 @@ data class Token(
             type: TokenType,
             identifier: String
         ): Token {
-            val value = "RTT_" + generateTokenValue(length = if (type == TokenType.DEVICE) 32 else 80)
+            val value = "EMS_" + generateTokenValue(length = if (type == TokenType.DEVICE) 32 else 80)
             return Token(
                 tokenId = tokenId,
                 value = value,
