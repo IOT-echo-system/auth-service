@@ -45,7 +45,7 @@ dependencies {
     implementation("com.robotutor:logging-starter:1.0.1")
     implementation("com.robotutor:robotutor-tech-utils:1.0.14")
     implementation("com.robotutor:web-client-starter:1.0.3")
-    implementation("com.robotutor:kafka-starter:1.0.4")
+    implementation("com.robotutor:kafka-starter:1.0.5")
 
     testImplementation("com.robotutor:robotutor-tech-utils:1.0.11:tests")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

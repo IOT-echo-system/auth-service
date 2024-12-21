@@ -2,7 +2,6 @@ package com.robotutor.authService.services
 
 import com.robotutor.authService.repositories.PolicyRepository
 import com.robotutor.authService.repositories.RoleRepository
-import com.robotutor.loggingstarter.logOnSuccess
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.core.annotation.Order
@@ -81,7 +80,6 @@ class RoleInitializer(
                     }
             )
             .then()
-            .logOnSuccess("Role initialisation is done")
             .block()
     }
 }

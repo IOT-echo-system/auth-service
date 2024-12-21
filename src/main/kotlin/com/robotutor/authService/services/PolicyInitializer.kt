@@ -1,6 +1,5 @@
 package com.robotutor.authService.services
 
-import com.robotutor.loggingstarter.logOnSuccess
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.core.annotation.Order
@@ -34,7 +33,6 @@ class PolicyInitializer(private val policyService: PolicyService) : ApplicationR
                 policyService.createPolicy(it)
             }
             .then()
-            .logOnSuccess("Policy initialisation is done")
             .block()
     }
 }
