@@ -2,10 +2,12 @@ package com.robotutor.authService.services
 
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
+import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 
 @Component
+@Order(1)
 class PolicyInitializer(private val policyService: PolicyService) : ApplicationRunner {
     override fun run(args: ApplicationArguments?) {
         val policies = listOf(

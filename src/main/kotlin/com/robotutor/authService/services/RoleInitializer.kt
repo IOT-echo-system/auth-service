@@ -1,15 +1,19 @@
 package com.robotutor.authService.services
 
 import com.robotutor.authService.repositories.PolicyRepository
+import com.robotutor.authService.repositories.RoleRepository
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
+import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 
 @Component
+@Order(2)
 class RoleInitializer(
     private val roleService: RoleService,
     private val policyRepository: PolicyRepository,
+    private val roleRepository: RoleRepository,
 ) : ApplicationRunner {
     override fun run(args: ApplicationArguments?) {
         val roleWithPolicies = listOf(
@@ -58,20 +62,23 @@ class RoleInitializer(
                 )
             ),
         )
-        Flux.fromIterable(roleWithPolicies)
-            .flatMapSequential { it: Map<String, List<String>> ->
-                val name = it.keys.first()
-                val policies = it.getOrDefault(name, emptyList())
-                roleService.createRole(name)
-                    .flatMap { role ->
-                        policyRepository.findAllByNameIn(policies)
-                            .map { it.policyId }
-                            .collectList()
-                            .flatMap {
-                                roleService.addPolicies(role.roleId, it)
+        roleRepository.findAll()
+            .switchIfEmpty(
+                Flux.fromIterable(roleWithPolicies)
+                    .flatMapSequential { it: Map<String, List<String>> ->
+                        val name = it.keys.first()
+                        val policies = it.getOrDefault(name, emptyList())
+                        roleService.createRole(name)
+                            .flatMap { role ->
+                                policyRepository.findAllByNameIn(policies)
+                                    .map { it.policyId }
+                                    .collectList()
+                                    .flatMap {
+                                        roleService.addPolicies(role.roleId, it)
+                                    }
                             }
                     }
-            }
+            )
             .subscribe()
     }
 }
