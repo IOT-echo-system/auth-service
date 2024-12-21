@@ -11,4 +11,5 @@ import reactor.core.publisher.Mono
 interface PolicyRepository : ReactiveCrudRepository<Policy, PolicyId> {
     fun findByName(name: String): Mono<Policy>
     fun findAllByPolicyIdIn(ids: List<PolicyId>): Flux<Policy>
+    fun findAllByNameIn(names: List<String>): Flux<Policy>
 }

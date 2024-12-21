@@ -16,7 +16,12 @@ data class Role(
     @Indexed(unique = true)
     val roleId: RoleId,
     val name: String,
-    val policies: List<PolicyId> = emptyList(),
-)
+    val policies: MutableList<PolicyId> = mutableListOf(),
+) {
+    fun addPolicies(policies: List<PolicyId>): Role {
+        this.policies.plus(policies)
+        return this
+    }
+}
 
 typealias RoleId = String

@@ -27,7 +27,7 @@ class PolicyInitializer(private val policyService: PolicyService) : ApplicationR
             "ROUTINE:DELETE",
         )
         Flux.fromIterable(policies)
-            .flatMap {
+            .flatMapSequential {
                 policyService.createPolicy(it)
             }
             .subscribe()

@@ -1,9 +1,6 @@
 package com.robotutor.authService.services
 
-import com.robotutor.authService.models.IdType
-import com.robotutor.authService.models.Policy
-import com.robotutor.authService.models.Role
-import com.robotutor.authService.models.RoleId
+import com.robotutor.authService.models.*
 import com.robotutor.authService.repositories.RoleRepository
 import com.robotutor.iot.service.IdGeneratorService
 import com.robotutor.loggingstarter.logOnSuccess
@@ -22,6 +19,12 @@ class RoleService(
             roleRepository.save(Role(roleId = it, name = name))
         }
             .logOnSuccess("Successfully created role: $name")
+    }
+
+    fun addPolicies(roleId: RoleId, policies: List<PolicyId>): Mono<Role> {
+        return roleRepository.findByRoleId(roleId).flatMap {
+            roleRepository.save(it.addPolicies(policies))
+        }
     }
 
     fun getPoliciesByRoleId(roleId: RoleId): Flux<Policy> {
