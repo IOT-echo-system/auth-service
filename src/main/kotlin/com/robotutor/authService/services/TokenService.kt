@@ -63,7 +63,7 @@ class TokenService(
                             "identifier" to identifier,
                             "type" to type,
                             "roleId" to roleId
-                        ),
+                        )
                     )
             }
             .logOnSuccess(message = "Successfully generated token")
