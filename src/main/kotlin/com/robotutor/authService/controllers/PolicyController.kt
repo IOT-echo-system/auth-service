@@ -15,7 +15,7 @@ class PolicyController(
 ) {
 
     @GetMapping
-    fun validateToken(userData: UserData): Flux<PolicyView> {
+    fun getPolicies(userData: UserData): Flux<PolicyView> {
         return roleService.getPoliciesByRoleId(userData.roleId).map { PolicyView.from(it) }
     }
 }
