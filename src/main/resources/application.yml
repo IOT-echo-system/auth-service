@@ -5,6 +5,9 @@ spring:
   data:
     mongodb:
       uri: ${MONGODB_URL}/auth-service
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
   application:
     name: AUTH-SERVICE
   kafka:
