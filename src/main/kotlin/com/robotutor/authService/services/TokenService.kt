@@ -10,6 +10,7 @@ import com.robotutor.iot.auditOnSuccess
 import com.robotutor.iot.exceptions.UnAuthorizedException
 import com.robotutor.iot.service.IdGeneratorService
 import com.robotutor.iot.utils.createMonoError
+import com.robotutor.loggingstarter.Logger
 import com.robotutor.loggingstarter.logOnError
 import com.robotutor.loggingstarter.logOnSuccess
 import org.springframework.stereotype.Service
@@ -22,7 +23,7 @@ class TokenService(
     private val tokenRepository: TokenRepository,
     private val idGeneratorService: IdGeneratorService,
 ) {
-
+    private val logger = Logger(this::class.java)
     fun validate(token: String): Mono<ValidateTokenResponse> {
         return tokenRepository.findByValueAndExpiredAtAfter(token)
             .map {
@@ -35,8 +36,8 @@ class TokenService(
             .switchIfEmpty {
                 createMonoError(UnAuthorizedException(IOTError.IOT0103))
             }
-            .logOnSuccess(message = "Successfully validated token")
-            .logOnError(errorCode = IOTError.IOT0103.errorCode, errorMessage = "Failed to validate token")
+            .logOnSuccess(logger, message = "Successfully validated token")
+            .logOnError(logger, errorCode = IOTError.IOT0103.errorCode, errorMessage = "Failed to validate token")
     }
 
     fun generateToken(
@@ -66,7 +67,7 @@ class TokenService(
                         )
                     )
             }
-            .logOnSuccess(message = "Successfully generated token")
+            .logOnSuccess(logger, message = "Successfully generated token")
     }
 
 //    fun resetPassword(resetPasswordRequest: ResetPasswordRequest, tokenValue: String): Mono<UserDetails> {

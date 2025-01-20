@@ -11,6 +11,7 @@ import com.robotutor.iot.auditOnSuccess
 import com.robotutor.iot.exceptions.BadDataException
 import com.robotutor.iot.utils.createMono
 import com.robotutor.iot.utils.createMonoError
+import com.robotutor.loggingstarter.Logger
 import com.robotutor.loggingstarter.logOnError
 import com.robotutor.loggingstarter.logOnSuccess
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -24,6 +25,7 @@ class UserService(
     private val passwordEncoder: PasswordEncoder,
     private val userServiceGateway: UserServiceGateway
 ) {
+    private val logger = Logger(this::class.java)
 //    fun resetPassword(userId: UserId, password: String): Mono<UserDetails> {
 //        return userRepository.findByUserId(userId)
 //            .flatMap {
@@ -62,8 +64,13 @@ class UserService(
                 )
                 userRepository.save(userDetails)
             }
-            .logOnSuccess("Successfully registered new user", additionalDetails = mapOf("userId" to user.userId))
+            .logOnSuccess(
+                logger,
+                "Successfully registered new user",
+                additionalDetails = mapOf("userId" to user.userId)
+            )
             .logOnError(
+                logger,
                 errorMessage = "Failed to register new User",
                 additionalDetails = mapOf("userId" to user.userId)
             )
@@ -84,8 +91,8 @@ class UserService(
                         .auditOnError(event = "VERIFY_PASSWORD", userId = details.userId)
                 }
             }
-            .logOnSuccess("Successfully verified password")
-            .logOnError("", "Failed to verify password")
+            .logOnSuccess(logger, "Successfully verified password")
+            .logOnError(logger, "", "Failed to verify password")
     }
 }
 

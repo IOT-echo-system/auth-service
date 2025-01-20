@@ -3,6 +3,7 @@ package com.robotutor.authService.services
 import com.robotutor.authService.models.*
 import com.robotutor.authService.repositories.RoleRepository
 import com.robotutor.iot.service.IdGeneratorService
+import com.robotutor.loggingstarter.Logger
 import com.robotutor.loggingstarter.logOnSuccess
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
@@ -14,11 +15,12 @@ class RoleService(
     private val idGeneratorService: IdGeneratorService,
     private val policyService: PolicyService
 ) {
+    private val logger = Logger(this::class.java)
     fun createRole(name: String): Mono<Role> {
         return idGeneratorService.generateId(IdType.ROLE_ID).flatMap {
             roleRepository.save(Role(roleId = it, name = name))
         }
-            .logOnSuccess("Successfully created role: $name")
+            .logOnSuccess(logger, "Successfully created role: $name")
     }
 
     fun addPolicies(roleId: RoleId, policies: List<PolicyId>): Mono<Role> {
