@@ -1,15 +1,12 @@
 package com.robotutor.authService.services
 
-import org.springframework.boot.ApplicationArguments
-import org.springframework.boot.ApplicationRunner
-import org.springframework.core.annotation.Order
+import com.robotutor.authService.models.Policy
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 
 @Component
-@Order(1)
-class PolicyInitializer(private val policyService: PolicyService) : ApplicationRunner {
-    override fun run(args: ApplicationArguments?) {
+class PolicyInitializer(private val policyService: PolicyService) {
+    fun initialize(): Flux<Policy> {
         val policies = listOf(
             "PREMISES:CREATE",
             "PREMISES:READ",
@@ -26,17 +23,20 @@ class PolicyInitializer(private val policyService: PolicyService) : ApplicationR
             "FEED:CREATE",
             "FEED:READ",
             "FEED:UPDATE",
+            "FEED:UPDATE_VALUE",
             "FEED:DELETE",
             "ROUTINE:CREATE",
             "ROUTINE:READ",
             "ROUTINE:UPDATE",
             "ROUTINE:DELETE",
+            "WIDGET:CREATE",
+            "WIDGET:READ",
+            "WIDGET:UPDATE",
+            "WIDGET:DELETE",
         )
-        Flux.fromIterable(policies)
+        return Flux.fromIterable(policies)
             .flatMapSequential {
                 policyService.createPolicy(it)
             }
-            .then()
-            .block()
     }
 }

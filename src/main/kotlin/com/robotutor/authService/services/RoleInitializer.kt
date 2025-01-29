@@ -1,21 +1,18 @@
 package com.robotutor.authService.services
 
+import com.robotutor.authService.models.Role
 import com.robotutor.authService.repositories.PolicyRepository
 import com.robotutor.authService.repositories.RoleRepository
-import org.springframework.boot.ApplicationArguments
-import org.springframework.boot.ApplicationRunner
-import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 
 @Component
-@Order(2)
 class RoleInitializer(
     private val roleService: RoleService,
     private val policyRepository: PolicyRepository,
     private val roleRepository: RoleRepository,
-) : ApplicationRunner {
-    override fun run(args: ApplicationArguments?) {
+) {
+    fun initialize(): Flux<Role> {
         val roleWithPolicies = listOf(
             mapOf(
                 "OWNER" to listOf(
@@ -70,7 +67,7 @@ class RoleInitializer(
                 )
             ),
         )
-        roleRepository.findAll()
+        return roleRepository.findAll()
             .switchIfEmpty(
                 Flux.fromIterable(roleWithPolicies)
                     .flatMapSequential { it: Map<String, List<String>> ->
@@ -87,7 +84,6 @@ class RoleInitializer(
                             }
                     }
             )
-            .then()
-            .block()
+
     }
 }
